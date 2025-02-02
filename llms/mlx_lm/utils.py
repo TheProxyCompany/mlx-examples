@@ -317,7 +317,8 @@ def generate_step(
             prompt_progress_callback(total_prompt_tokens, total_prompt_tokens)
         if n == max_tokens:
             break
-        yield y.item(), logprobs
+        for token in [y.item()] if y.shape[0] == 1 else y.tolist():
+            yield token, logprobs
         if n % 256 == 0:
             mx.metal.clear_cache()
         y, logprobs = next_y, next_logprobs
